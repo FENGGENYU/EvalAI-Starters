@@ -1,6 +1,6 @@
 # If you are not sure what all these fields mean, please refer our documentation here:
 # https://evalai.readthedocs.io/en/latest/configuration.html
-title: 2024 ABO Fine-grained Semantic Segmentation Competition
+title: 2023 ABO Fine-grained Semantic Segmentation Competition
 short_description: A landing page for the Competition
 description: templates/description.html
 evaluation_details: templates/evaluation_details.html
@@ -11,7 +11,7 @@ leaderboard_description:
 evaluation_script: evaluation_script.zip
 remote_evaluation: False
 is_docker_based: False
-start_date: 2023-05-01 00:00:00
+start_date: 2023-05-30 00:00:00
 end_date: 2023-08-15 23:59:59
 published: False
 
