@@ -6,93 +6,66 @@ table, th, td {
 }
 </style>
 <body>
-
-<H4>Introduction</H4>
-<!--<p>Thanks all for your interests for our challenge! We decided to extend the submission timeline. Please take a look at the updated timeline.</p>
--->
-<p>Welcome to the ICCV 3DVeComm Workshop Challenge! The challenge will be conducted on the recently published Amazon-Berkeley-Object(ABO) dataset, which features high quality, uniformly standard 3D models of real products sold online,
-created by artists. The 3D models are made up of build-aware connected components, which form the
-basis of various shape properties such as texture, motion, function, interaction, and construction. 
-
-The workshop challenge focuses on assigning fine-grained semantic labels (e.g., leg and arm, defined based
-on PartNet[5]) to these connected components in the ABO dataset.
-<br>
-The 3D model with build-aware connected components is presented by a set of convex shapes, please see the following figure.
-<img src="https://drive.google.com/uc?export=view&id=14QJO3yDNR7FjC7cMhPk88BJjHGAGZsUh" width="600px"
-  height="220px"/>
-
-The task of the challenge is given the decomposed convex shape to predict the semantic labels for each convex shape. This is a fantastic opportunity for researchers, students, and data scientists to apply their knowledge and skills in computer vision and machine learning to solve real-world e-commerce problems.</p>
-
-The challenge is part of the <a href="https://3dv-in-ecommerce.github.io/">3DVeComm workshop</a>.
-
-<H4>Dataset</H4>
-
-<p>The dataset is divided into training and validation sets, which participants can use to train and validate their models. Each 3D convex shape is accompanied by a ground truth semantic label. The dataset can be downloaded from <a href="https://www.amazon.com/clouddrive/share/1kY62fIYfCWcYYve9EY6ANolZ0BWdJXHiMGqJt0ZVgi">here</a>. 
-  Meanwhile, the code used for loading and visualizing the data can be found <a href="https://github.com/amazon-science/amazon-alexa-language-assisted-product-search">here</a>.</p>
-
-<p>The provided file contains the following contents:  
-<!--<br><br>
-<i>1. <a href="https://www.amazon.com/clouddrive/share/jJxbtRqih3ScOWGqWJifEemVAqS4R5WzuDey7dcMiuo">The feedback annotation file</a> </i>
-<br>
-The file contains the source product, target product, non-target product and 3 different language feedbacks provided by the annotator when they wanted to buy the <i>Target Product</i> (not the <i>Non-Target Product</i>) after showing the <i>Source Product</i>. For each product, we will provide one ASIN (Product ID) and one product image ID. One product may have multiple product images. The image ID we shown in the csv file is the one we showed to the annotator. All products are from the apparel category, including but not limited to clothing, backpack, handbag and sun-glasses. 
--->
+<h4>Introduction</h4>
+<p>Welcome to the ICCV 3DVeComm Workshop Challenge! This challenge focuses on the recently introduced Amazon-Berkeley-Object (ABO) dataset, which consists of high-quality, standardized 3D models of real products available for purchase online. These models have been skillfully created by artists and are composed of build-aware connected components that represent various shape properties such as texture, motion, function, interaction, and construction.</p>
+<p>The primary objective of the workshop challenge is to assign fine-grained semantic labels (e.g., leg and arm, as defined by PartNet[5]) to the connected components in the ABO dataset. The 3D models with build-aware connected components are represented as a set of convex shapes, as illustrated in the figure below.</p>
+<img src="https://drive.google.com/uc?export=view&id=14QJO3yDNR7FjC7cMhPk88BJjHGAGZsUh" width="600px" height="220px">
+<p>Participants in this challenge will be tasked with predicting the semantic labels for each convex shape. This exciting opportunity allows researchers, students, and data scientists to apply their expertise in computer vision and machine learning to address real-world e-commerce problems.</p>
+<p>The challenge is part of the <a href="https://3dv-in-ecommerce.github.io/">3DVeComm workshop</a>.</p>
+<h4>Dataset</h4>
+<p>The dataset is divided into training and validation sets for participants to train and validate their models. Each 3D convex shape comes with a ground truth semantic label. You can download the dataset from <a href="https://www.amazon.com/clouddrive/share/1kY62fIYfCWcYYve9EY6ANolZ0BWdJXHiMGqJt0ZVgi">here</a>. The code for loading and visualizing the data is available <a href="https://github.com/amazon-science/amazon-alexa-language-assisted-product-search">here</a>.</p>
+<p>The provided data file includes:</p>
 <ul>
   <li>ASIN</li>
-  <li>The complete shape meshes</li>
-  <li>The connected components</li>
-  <li>The decomposed convex shapes</li>
-  <li>The semantic labels for each convex shape</li>
+  <li>Complete shape meshes</li>
+  <li>Connected components</li>
+  <li>Decomposed convex shapes</li>
+  <li>Semantic labels for each convex shape</li>
 </ul>
-
-<!--<p><b>Specific product images linked in the dataset may be removed from Amazon's servers from time to time and become unavailable.</b></p>
--->
-
-<H5> Evaluation</H5>
-<p>The evaluation dataset follows the same set up as above but without the semantic labels:</p>
+<h4>Evaluation</h4>
+<p>The evaluation dataset has the same structure as the training dataset, but without the semantic labels:</p>
 <ul>
   <li>ASIN</li>
-  <li>The complete shape meshes</li>
-  <li>The connected components</li>
-  <li>The decomposed convex shapes</li>
+  <li>Complete shape meshes</li>
+  <li>Connected components</li>
+  <li>Decomposed convex shapes</li>
 </ul>
-
-The participants are required to generate a json file for submission, which contains the prediction semantic label for each convex shape.</p>
-We provide the code to generate such a json file from a list of numpy array at here.
-The generated json file will be in this format:
-<br>
+<p>Participants must generate a JSON file for submission, containing the predicted semantic label for each convex shape. We provide the code to generate such a JSON file from a list of NumPy arrays at here.</p>
+<p>The generated JSON file will follow this format, where each cell represents the prediction for one product:</p>
 <pre>
 <code>
-{<br>
-&emsp;"ASIN": B075X33T21,<br>
-&emsp;"convex labels": [0, 1, 0, 2, 3],<br>
-}
+[
+  {
+    &emsp;"ASIN": "B075X33T21",
+    &emsp;"convex labels": [0, 1, 0, 2, 3],
+  },
+  {
+    &emsp;"ASIN": "B084DCJKSL",
+    &emsp;"convex labels": [0, 0, 0, 3, 3],
+  },
+]
 </code>
 </pre>
-
-To download the Evaluation dataset,
+<p>To download the Evaluation dataset:</p>
 <pre>
 <code>
-aws s3 cp https://www.amazon.com/clouddrive/share<br>
+aws s3 cp https://www.amazon.com/clouddrive/share
 </code>
 </pre>
-</p>
-
-<H4>License</H4>
-<p>The dataset (all the annotations) is released under <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a> license.</p>
-
-<H4>Timeline</H4>
+<h4>License</h4>
+<p>The dataset (all annotations) is released under the <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a> license.</p>
+<h4>Timeline</h4>
 <ul>
   <li>05/30/2023: Training Data Release</li>
   <li>06/12/2023: Validation Data Release</li>
-  <li>12/02/2023: Baseline Checkpoint Release</li>
-  <li>12/10/2023: Baseline Training Code Release</li>
+  <li>07/02/2023: Baseline Checkpoint Release</li>
+  <li>07/10/2023: Baseline Training Code Release</li>
   <li>07/30/2023: Evaluation Data Release</li>
   <li>07/30/2023: Evaluation Submission Open</li>
   <li>08/15/2023: Evaluation Result Submission Deadline</li>
   <li>08/30/2023: Evaluation Result Release</li>
 </ul>
-
-<H4>Organizers</H4>
+<h4>Organizers</h4>
 <p>
 Fenggen Yu (fenggeny@sfu.ca) <br>
 Xu Zhang (xzhnamz@amazon.com) <br>
