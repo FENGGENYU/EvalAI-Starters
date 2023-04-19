@@ -22,6 +22,20 @@ table, th, td {
   <li>Decomposed convex shapes</li>
   <li>Semantic labels for each convex shape</li>
 </ul>
+<h4>Development</h4>
+<p>The development dataset has the same structure as the training dataset, but without the semantic labels:</p>
+<ul>
+  <li>ASIN</li>
+  <li>Complete shape meshes</li>
+  <li>Connected components</li>
+  <li>Decomposed convex shapes</li>
+</ul>
+</pre>
+<p>To download the development dataset:</p>
+<pre>
+<code>
+aws s3 cp https://www.amazon.com/clouddrive/share
+</code>
 <h4>Evaluation</h4>
 <p>The evaluation dataset has the same structure as the training dataset, but without the semantic labels:</p>
 <ul>
@@ -42,7 +56,7 @@ aws s3 cp https://www.amazon.com/clouddrive/share
 <h4>Timeline</h4>
 <ul>
   <li>05/30/2023: Training Data Release</li>
-  <li>06/12/2023: Validation Data Release</li>
+  <li>06/12/2023: Development Data Release</li>
   <li>07/02/2023: Baseline Checkpoint Release</li>
   <li>07/10/2023: Baseline Training Code Release</li>
   <li>07/30/2023: Evaluation Data Release</li>
