@@ -1,4 +1,4 @@
-<h4>Evaluation Data Format</h4>
+<h4>Submission Data Format</h4>
 <p>Participants are required to generate a JSON file for submission, which should contain the predicted semantic label for each convex shape. The code to create such a JSON file from a list of NumPy arrays is provided here.</p>
 <p>The generated JSON file should adhere to the following format, where each entry represents the prediction for one product:</p>
 <pre>
@@ -15,7 +15,9 @@
 ]
 </code>
 </pre>
-<h4>Evaluation and Metrics</h4>
+Participants need to submit one JSON file for development dataset and one JSON file for evaluation dataset.
+
+<h4>Evaluation Metrics</h4>
 <p>
 The evaluation metric used for this challenge is the prediction accuracy. For each convex shape, the prediction accuracy will be determined by comparing the ground truth label with the predicted label. The overall prediction accuracy will be computed as the average accuracy across all convex shapes.
 </p>
