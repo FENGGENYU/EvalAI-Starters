@@ -1,25 +1,11 @@
-<p> In the development phase, the participant will generate a JSON file for submission, which should contain the predicted semantic label for each convex shape in the development dataset. The code to create such a JSON file from a list of NumPy arrays is provided here.</p>
-<p>The generated JSON file should adhere to the following format, where each entry represents the prediction for one product:</p>
-<pre>
-<code>
-[
-  {
-    &emsp;"ASIN": "B075X33T21",
-    &emsp;"convex labels": [0, 1, 0, 2, 3],
-  },
-  {
-    &emsp;"ASIN": "B084DCJKSL",
-    &emsp;"convex labels": [0, 0, 0, 3, 3],
-  },
-]
-</code>
-</pre>
-
-<p> To check the <a href="https://github.com/amazon-science/amazon-alexa-language-assisted-product-search/blob/main/src/submission/generate_random_submission.py">script</a> for how to generate a sample json file. 
-<pre>
-<code>
-python ./submission/generate_random_submission.py -o {output_pkl_path} -g {evaluation_gallery_file} -q {evaluation_query_file}
-</code>
-</pre>
-
+<p> In the development phase, the participant will generate a JSON file for submission, which should contain the predicted semantic label for each convex shape in the development dataset.
+<p>The generated JSON file should adhere to the following dictionary format, where each key in the dictionary represents the ASIN of one product, and the value represents the predicted labels of convex shapes.
 </p>
+<pre>
+<code>
+{
+  "B075X33T21": [0, 1, 0, 2, 3],
+  "B084DCJKSL": [0, 0, 0, 3, 3],
+}
+</code>
+</pre>

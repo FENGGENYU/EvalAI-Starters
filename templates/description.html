@@ -13,49 +13,33 @@ table, th, td {
 <p>Participants in this challenge will be tasked with predicting the semantic labels for each convex shape. This exciting opportunity allows researchers, students, and data scientists to apply their expertise in computer vision and machine learning to address real-world e-commerce problems.</p>
 <p>The challenge is part of the <a href="https://3dv-in-ecommerce.github.io/">3DVeComm workshop</a>.</p>
 <h4>Dataset</h4>
-<p>The dataset is divided into training and validation sets for participants to train and validate their models. Each 3D convex shape comes with a ground truth semantic label. You can download the dataset from <a href="https://www.amazon.com/clouddrive/share/1kY62fIYfCWcYYve9EY6ANolZ0BWdJXHiMGqJt0ZVgi">here</a>. The code for loading and visualizing the data is available <a href="https://github.com/amazon-science/amazon-alexa-language-assisted-product-search">here</a>.</p>
+<p>The dataset is divided into training and validation sets for participants to train and validate their models. Each 3D convex shape comes with a ground truth semantic label. You can download the dataset from <a href="https://drive.google.com/file/d/1ljSPd6pgcdVfOeoUA5_gSMkrzk2eocuA/view?usp=sharing">here</a>.
 <p>The provided data file includes:</p>
 <ul>
-  <li>ASIN</li>
-  <li>Complete shape meshes</li>
-  <li>Connected components</li>
-  <li>Decomposed convex shapes</li>
-  <li>Semantic labels for each convex shape</li>
+  <li>ASIN: the id of each product, it is set as the folder name. </li>
+  <li>cc: connected components meshes</li>
+  <li>convex: decomposed convex shapes meshes</li>
+  <li>label.json: semantic labels for each convex shape</li>
+  <li>relation.json: the mapping relation between connected components and convex shape</li>
 </ul>
 <h4>Development</h4>
 <p>The development dataset has the same structure as the training dataset, but without the semantic labels:</p>
 <ul>
-  <li>ASIN</li>
-  <li>Complete shape meshes</li>
-  <li>Connected components</li>
-  <li>Decomposed convex shapes</li>
+  <li>ASIN: the id of each product, it is set as the folder name. </li>
+  <li>cc: connected components meshes</li>
+  <li>convex: decomposed convex shapes meshes</li>
+  <li>relation.json: the mapping relation between connected components and convex shape</li>
 </ul>
-<p>To download the development dataset:</p>
-<pre>
-<code>
-aws s3 cp https://www.amazon.com/clouddrive/share
-</code>
-</pre>
+
 <h4>Evaluation</h4>
-<p>The evaluation dataset has the same structure as the development dataset:</p>
-<ul>
-  <li>ASIN</li>
-  <li>Complete shape meshes</li>
-  <li>Connected components</li>
-  <li>Decomposed convex shapes</li>
-</ul>
-<p>To download the Evaluation dataset:</p>
-<pre>
-<code>
-aws s3 cp https://www.amazon.com/clouddrive/share
-</code>
-</pre>
+<p>The evaluation dataset has the same structure as the development dataset.</p>
+
 <h4>License</h4>
 <p>The dataset (all annotations) is released under the <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a> license.</p>
 <h4>Timeline</h4>
 <ul>
   <li>05/30/2023: Training Data Release</li>
-  <li>06/12/2023: Development Data Release</li>
+  <li>06/04/2023: Development Data Release</li>
   <li>07/02/2023: Baseline Checkpoint Release</li>
   <li>07/10/2023: Baseline Training Code Release</li>
   <li>07/30/2023: Evaluation Data Release</li>

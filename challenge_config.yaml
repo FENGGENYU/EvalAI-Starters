@@ -19,24 +19,24 @@ leaderboard:
   - id: 1
     schema:
       {
-        "labels": ["mAP"],
-        "default_order_by": "mAP",
+        "labels": ["accuracy"],
+        "default_order_by": "accuracy",
         "metadata": {
-          "mAP": {
+          "accuracy": {
             "sort_ascending": False,
-            "description": "Mean average precision for the returned images.",
+            "description": "Mean prediction accuracy of the predicted labels.",
           }
         }
     }
   - id: 2
     schema:
       {
-        "labels": ["mAP"],
-        "default_order_by": "mAP",
+        "labels": ["accuracy"],
+        "default_order_by": "accuracy",
         "metadata": {
-          "mAP": {
+          "accuracy": {
             "sort_ascending": False,
-            "description": "Mean average precision for the returned images.",
+            "description": "Mean prediction accuracy of the predicted labels.",
           }
         }
       }

@@ -1,21 +1,18 @@
 <h4>Submission Data Format</h4>
-<p>Participants are required to generate a JSON file for submission, which should contain the predicted semantic label for each convex shape. The code to create such a JSON file from a list of NumPy arrays is provided here.</p>
-<p>The generated JSON file should adhere to the following format, where each entry represents the prediction for one product:</p>
+<p>Participants are required to generate a JSON file for submission, which should contain the predicted semantic label for each convex shape.</p>
+<p>The generated JSON file should adhere to the following dictionary format, where each key in the dictionary represents the ASIN of one product, and the value represents the predicted labels of convex shapes.
+</p>
 <pre>
 <code>
-[
-  {
-    &emsp;"ASIN": "B075X33T21",
-    &emsp;"convex labels": [0, 1, 0, 2, 3],
-  },
-  {
-    &emsp;"ASIN": "B084DCJKSL",
-    &emsp;"convex labels": [0, 0, 0, 3, 3],
-  },
-]
+{
+  "B075X33T21": [0, 1, 0, 2, 3],
+  "B084DCJKSL": [0, 0, 0, 3, 3],
+}
 </code>
 </pre>
+
 Participants need to submit one JSON file for development dataset and one JSON file for evaluation dataset.
+The order of items in the submitted JSON file is not required, but the convex labels of each ASIN should follow the same order as the convex shape meshes in the 'convex' folder.
 
 <h4>Evaluation Metrics</h4>
 <p>
