@@ -20,8 +20,10 @@ table, th, td {
   <li>cc: connected components meshes</li>
   <li>convex: decomposed convex shapes meshes</li>
   <li>label.json: semantic labels for each convex shape</li>
-  <li>relation.json: the mapping relation between connected components and convex shape</li>
+  <li>relation.json: each convex shapes is decomposed from which component</li>
 </ul>
+The relation.json records which component each convex shapes is decomposed from. Since the convex shapes are decomposed from the connected components, we encourage participants to use this information to improve the prediction results.
+
 <h4>Development</h4>
 <p>The development dataset has the same structure as the training dataset, but without the semantic labels:</p>
 <ul>

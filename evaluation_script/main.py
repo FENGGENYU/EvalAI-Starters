@@ -86,24 +86,24 @@ def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwarg
             data_dict = json.load(f)
         print(f"Evaluating for {phase_name} Phase")
         # get AP for each query
-        total_ap = 0
+        total_acc = 0
         total_gt = 0
         #for idx in gt_dict:
         for key, value in gt_dict.items():
             if key not in data_dict:
-                total_ap += 0
+                total_acc += 0
                 total_gt += len(gt_dict[key])
             else:
-                ap, gt_len = compare(gt_dict[key], data_dict[key])
-                total_ap += ap
+                acc, gt_len = compare(gt_dict[key], data_dict[key])
+                total_acc += acc
                 total_gt += gt_len
 
-        mAP = total_ap/total_gt
+        accuracy = total_acc/total_gt
 
         output["result"] = [
             {
                 split_name: {
-                    "mAP": mAP
+                    "accuracy": accuracy
                 }
             }
         ]
