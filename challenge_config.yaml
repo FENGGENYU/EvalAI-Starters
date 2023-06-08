@@ -13,7 +13,7 @@ remote_evaluation: False
 is_docker_based: False
 start_date: 2023-06-15 00:00:00
 end_date: 2023-08-15 23:59:59
-published: False
+published: True
 
 leaderboard:
   - id: 1
@@ -110,6 +110,12 @@ dataset_splits:
 
 challenge_phase_splits:
   - challenge_phase_id: 1
+    leaderboard_id: 1
+    dataset_split_id: 1
+    visibility: 3
+    leaderboard_decimal_precision: 2
+    is_leaderboard_order_descending: True
+  - challenge_phase_id: 2
     leaderboard_id: 1
     dataset_split_id: 1
     visibility: 3
