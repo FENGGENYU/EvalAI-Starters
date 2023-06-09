@@ -11,7 +11,7 @@ leaderboard_description:
 evaluation_script: evaluation_script.zip
 remote_evaluation: False
 is_docker_based: False
-start_date: 2023-06-15 00:00:00
+start_date: 2023-06-01 00:00:00
 end_date: 2023-08-15 23:59:59
 published: True
 
