@@ -56,7 +56,7 @@ challenge_phases:
     leaderboard_public: True
     is_public: True
     is_submission_public: True
-    start_date: 2023-06-10 00:00:00
+    start_date: 2023-06-01 00:00:00
     end_date: 2023-08-15 23:59:59
     test_annotation_file_seg: annotations/val.npz
     test_annotation_file: annotations/val_gt.json
