@@ -54,7 +54,7 @@ challenge_phases:
     name: Dev Phase
     description: templates/challenge_phase_1_description.html
     leaderboard_public: True
-    is_public: False
+    is_public: True
     is_submission_public: True
     start_date: 2023-06-01 00:00:00
     end_date: 2023-08-15 23:59:59
