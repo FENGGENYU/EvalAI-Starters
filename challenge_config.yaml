@@ -61,7 +61,7 @@ challenge_phases:
     test_annotation_file_seg: annotations/val.npz
     test_annotation_file: annotations/val_gt.json
     codename: dev
-    max_submissions_per_day: 5
+    max_submissions_per_day: 20
     max_submissions_per_month: 50
     max_submissions: 50
     default_submission_meta_attributes:

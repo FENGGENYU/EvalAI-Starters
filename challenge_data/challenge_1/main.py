@@ -6,197 +6,184 @@ import math
 import numpy as np
 import os
 
-def load_jsonl(input_file) -> list:
-    """Load jsonl-format ground-truth and result."""
-    result_data_dict = {}
-    with open(input_file, "r") as fin:
-        data_lines = fin.readlines()
-        for line in data_lines:
-            # Remove empty row.
-            line = line.strip()
-            if len(line) < 1:
-                continue
-            # Decode.
-            data_dict = json.loads(line)
-            # Push the data into a list.
-            result_data_dict[data_dict["index"]] = data_dict
-    return result_data_dict
 
-def compare(gt_candidates: dict, data_candidates: dict) -> float:
-    """Compare one query gt and prediction and get ap.
+def calc_mIoU(labels,preds):
+	ious = []
+	
+	inter = 0
+	union = 0
+	
+	for pred, label in zip(preds, labels):
+		
+		ninds = list(set(pred.tolist() + label.tolist()))
 
-    Args:
-        gt_candidates(Dict): gt dict for each query,
-        data_candidates(Dict): prediction dict for each query
-    
-    Return average_precision, the label for the first query
-    """
-    # A dict to store the score.
-    data_candidates_dict = {}
-    # A dict to store the gt.
-    gt_candidates_dict = {}
+		for ind in ninds:
+			pn=np.zeros(pred.shape, dtype=int)
+			ln=np.zeros(label.shape, dtype=int)
 
-    # A list 
-    score_list = []
-    for candidate in data_candidates:
-        data_candidates_dict[candidate["candidate_asin"]] = candidate["score"]
+			pind=(pred ==ind).nonzero()[0]
+			lind=(label == ind).nonzero()[0]
+			pn[pind]=1
+			ln[lind]=1
+			inter += (pn & ln).sum().item()
+			union += (pn | ln).sum().item()
 
-    for candidate in gt_candidates:
-        gt_candidates_dict[candidate["candidate_asin"]] = (candidate["annotation"] == "fulfill")
+			if union == 0:
+				continue
+			iou=(1.*inter)/(1.*union)
+			ious.append(iou)
 
-    for key in gt_candidates_dict:
-        if key not in data_candidates_dict:
-            score = 0
-        else:
-            score = data_candidates_dict[key]
-        score_list.append((score, gt_candidates_dict[key]))
-    score_list.sort(reverse = True, key = lambda x: x[0])
+	miou = np.array(ious).mean()
+	return miou
 
-    positive_count = 0
-    total_acc = 0
+def calc_seg_miou(pred_label_list,gt_labels_list, segment_list):
+	A_labels = []
+	A_preds = []
+	# for samp_segments,samp_labels,seg_preds in zip(
+	#data['samp_segments'],gt_labels,A_seg_preds ##
+	#must start from index 0
+	for i in range(len(pred_label_list)):
+		samp_segments = segment_list[i]
+		seg_preds = pred_label_list[i]
+		gt_labels = gt_labels_list[i]
+		samp_preds = np.zeros(samp_segments.shape[0], dtype=int)-1 
+		samp_labels = np.zeros(samp_segments.shape[0], dtype=int)-1 
+	
+		for j, (p,g) in enumerate(zip(seg_preds,gt_labels)):
+			inds= np.nonzero((samp_segments == j))[0].flatten()
+			samp_preds[inds]=p
+			samp_labels[inds]=g
 
-    for idx in range(len(score_list)):
-        if score_list[idx][1]:
-            positive_count+=1
-            total_acc += positive_count/(idx+1)
-    
-    ap = total_acc/positive_count
-    return ap, score_list[0][1]
+		assert(samp_preds>=0).all(), 'some label left'
+		A_labels.append(samp_labels)
+		A_preds.append(samp_preds)
 
-def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwargs):
-    print("Starting Evaluation.....")
-    print("Submission related metadata:")
-    """
-    Evaluates the submission for a particular challenge phase adn returns score
-    Arguments:
+	iou = calc_mIoU(A_labels,A_preds)
+	return iou
 
-        `test_annotations_file`: Path to test_annotation_file on the server
-        `user_submission_file`: Path to file submitted by the user
-        `phase_codename`: Phase to which submission is made
+def compare(gt_candidates: list, data_candidates: list) -> float:
+	"""Compare one query gt and prediction and get ap.
 
-        `**kwargs`: keyword arguments that contains additional submission
-        metadata that challenge hosts can use to send slack notification.
-        You can access the submission metadata
-        with kwargs['submission_metadata']
+	Args:
+		gt_candidates(Dict): gt dict for each query,
+		data_candidates(Dict): prediction dict for each query
+	
+	Return average_precision, the label for the first query
+	"""
 
-        Example: A sample submission metadata can be accessed like this:
-        >>> print(kwargs['submission_metadata'])
-        {
-            "status": u"running",
-            "when_made_public": None,
-            "participant_team": 5,
-            "input_file": "https://abc.xyz/path/to/submission/file.json",
-            "execution_time": u"123",
-            "publication_url": u"ABC",
-            "challenge_phase": 1,
-            "created_by": u"ABC",
-            "stdout_file": "https://abc.xyz/path/to/stdout/file.json",
-            "method_name": u"Test",
-            "stderr_file": "https://abc.xyz/path/to/stderr/file.json",
-            "participant_team_name": u"Test Team",
-            "project_url": u"http://foo.bar",
-            "method_description": u"ABC",
-            "is_public": False,
-            "submission_result_file": "https://abc.xyz/path/result/file.json",
-            "id": 123,
-            "submitted_at": u"2017-03-20T19:22:03.880652Z",
-        }
-    """
-    print(kwargs["submission_metadata"])
-    output = {}
-    gt_dict = load_jsonl(test_annotation_file)
-    if phase_codename == "dev":
-        data_dict = load_jsonl(user_submission_file)
-        print("Evaluating for Dev Phase")
-        # get AP for each query
-        ap_list = []
-        first_one_correct_count = 0
-        for idx in gt_dict:
-            if idx not in data_dict:
-                ap_list.append(0)
-                continue
-            ap, label_at_1 = compare(gt_dict[idx]["candidates"], data_dict[idx]["candidates"])
-            first_one_correct_count += label_at_1
-            ap_list.append(ap)
+	gt_len = len(gt_candidates)
+	pred_len = len(data_candidates)
+	min_len = min(gt_len, pred_len)
 
-        total_ap = 0
-        for ap in ap_list:
-            total_ap+=ap
-        mAP = sum(ap_list)/len(ap_list)
+	total_acc = 0
+	for idx in range(min_len):
+		if gt_candidates[idx] == data_candidates[idx]:
+			total_acc += 1
+	
+	#ap = total_acc/gt_len
+	return total_acc, gt_len
 
-        output["result"] = [
-            {
-                "val_split": {
-                    "mAP": mAP,
-                    "P@1": first_one_correct_count/len(ap_list),
-                    "max_AP": max(ap_list),
-                    "min_AP": min(ap_list),
-                }
-            }
-        ]
-        # To display the results in the result file
-        output["submission_result"] = output["result"][0]["val_split"]
-        print("Completed evaluation for Dev Phase")
+def evaluate(test_annotation_file_seg, test_annotation_file, user_submission_file, phase_codename, **kwargs):
+	print("Starting Evaluation.....")
+	print("Submission related metadata:")
+	"""
+	Evaluates the submission for a particular challenge phase adn returns score
+	Arguments:
 
-    elif phase_codename == "veri" or phase_codename == "eval":
-        # Set phase name and split name.
-        feature_dim = 128
-        if phase_codename == "eval":
-            phase_name = "Evaluation"
-            split_name = "eval_split"
-        elif phase_codename == "veri":
-            phase_name = "Verification"
-            split_name = "veri_split"
+		`test_annotations_file`: Path to test_annotation_file on the server
+		`user_submission_file`: Path to file submitted by the user
+		`phase_codename`: Phase to which submission is made
 
-        print(f"Evaluating for {phase_name} Phase")
+		`**kwargs`: keyword arguments that contains additional submission
+		metadata that challenge hosts can use to send slack notification.
+		You can access the submission metadata
+		with kwargs['submission_metadata']
 
-        file_stats = os.stat(user_submission_file)    
-        # Load features.
-        assert file_stats.st_size/(1024 * 1024) < 500, "Submission file size shouldn't larger than 500 MB."
-    
-        with open(user_submission_file, 'rb') as f:
-            submitted_result = pkl.load(f)
-        query_feature = submitted_result["query_feature"]
-        gallery_feature = submitted_result["gallery_feature"]
+		Example: A sample submission metadata can be accessed like this:
+		>>> print(kwargs['submission_metadata'])
+		{
+			"status": u"running",
+			"when_made_public": None,
+			"participant_team": 5,
+			"input_file": "https://abc.xyz/path/to/submission/file.json",
+			"execution_time": u"123",
+			"publication_url": u"ABC",
+			"challenge_phase": 1,
+			"created_by": u"ABC",
+			"stdout_file": "https://abc.xyz/path/to/stdout/file.json",
+			"method_name": u"Test",
+			"stderr_file": "https://abc.xyz/path/to/stderr/file.json",
+			"participant_team_name": u"Test Team",
+			"project_url": u"http://foo.bar",
+			"method_description": u"ABC",
+			"is_public": False,
+			"submission_result_file": "https://abc.xyz/path/result/file.json",
+			"id": 123,
+			"submitted_at": u"2017-03-20T19:22:03.880652Z",
+		}
+	"""
+	print(kwargs["submission_metadata"])
+	output = {}
+	with open(test_annotation_file, 'r') as f:
+		gt_dict = json.load(f)
+	#gt_dict = load_jsonl(test_annotation_file)
+	if phase_codename == "dev" or phase_codename == "eval":
+		if phase_codename == "eval":
+			phase_name = "Evaluation Phase"
+			split_name = "eval_split"
+		elif phase_codename == "dev":
+			phase_name = "Dev Phase"
+			split_name = "val_split"
 
-        assert query_feature.shape[1] == feature_dim, f"query_feature dimension != {feature_dim}"
-        assert gallery_feature.shape[1] == feature_dim, f"gallery_feature dimension != {feature_dim}"
+		#data_dict = load_jsonl(user_submission_file)
+		with open(user_submission_file, 'r') as f:
+			data_dict = json.load(f)
+		seg_data = np.load(test_annotation_file_seg)
+		seg_name_list = seg_data['names'].tolist()
+		segments_array = seg_data['segments']
 
-        ap_list = []
-        first_one_correct_count = 0
-        
-        # Get Metric
-        for idx in gt_dict:
-            data_dict = copy.deepcopy(gt_dict[idx])
-            local_query_feature = query_feature[idx-1, :]
+		print(f"Evaluating for {phase_name} Phase")
+		# get AP for each query
+		total_acc = 0
+		total_gt = 0
+		test_label_list = []
+		gt_label_list = []
+		segment_list = []
+		#for idx in gt_dict:
+		for key, value in gt_dict.items():
+			if key not in data_dict:
+				total_acc += 0
+				total_gt += len(gt_dict[key])
 
-            for candidate_idx, candidate in enumerate(gt_dict[idx]["candidates"]):
-                max_score = 0
-                for local_idx in candidate["feature_index_list"]:
-                    local_gallery_feature = gallery_feature[local_idx - 1, :]
-                    l2_norm = math.sqrt(np.dot(local_gallery_feature, local_gallery_feature))
-                    if l2_norm<1e-5:
-                        continue
-                    else:
-                        score = (np.dot(local_query_feature, local_gallery_feature)+1)/2
-                        max_score = max(max_score, score)
-                data_dict["candidates"][candidate_idx]["score"] = max_score
-            ap, label_at_1 = compare(gt_dict[idx]["candidates"], data_dict["candidates"])
-            first_one_correct_count += label_at_1
-            ap_list.append(ap)
+				test_label_list.append([0 for _ in range(len(gt_dict[key]))])
+				gt_label_list.append(gt_dict[key])
+				index = seg_name_list.index(key)
+				segment_list.append(segments_array[index, :])
 
-        mAP = sum(ap_list)/len(ap_list)
-        output["result"] = [
-            {
-                split_name: {
-                    "mAP": mAP,
-                    "P@1": first_one_correct_count/len(ap_list),
-                    "max_AP": max(ap_list),
-                    "min_AP": min(ap_list),
-                }
-            }
-        ]
-        # To display the results in the result file
-        output["submission_result"] = output["result"][0][split_name]
-        print(f"Completed evaluation for {phase_name} Phase")
-    return output
+			else:
+				acc, gt_len = compare(gt_dict[key], data_dict[key])
+				total_acc += acc
+				total_gt += gt_len
+				test_label_list.append(data_dict[key])
+				gt_label_list.append(gt_dict[key])
+
+				index = seg_name_list.index(key)
+				segment_list.append(segments_array[index, :])
+
+		accuracy = total_acc/total_gt
+		iou = calc_seg_miou(test_label_list, gt_label_list, segment_list)
+
+		output["result"] = [
+			{
+				split_name: {
+					"accuracy": accuracy,
+					"iou": iou,
+				}
+			}
+		]
+		# To display the results in the result file
+		output["submission_result"] = output["result"][0][split_name]
+		print(output["submission_result"])
+		print(f"Completed evaluation for {phase_name} Phase")
+
+	return output
