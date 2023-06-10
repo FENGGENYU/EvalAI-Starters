@@ -83,7 +83,7 @@ def compare(gt_candidates: list, data_candidates: list) -> float:
 	#ap = total_acc/gt_len
 	return total_acc, gt_len
 
-def evaluate(test_annotation_file_seg, test_annotation_file, user_submission_file, phase_codename, **kwargs):
+def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwargs):
 	print("Starting Evaluation.....")
 	print("Submission related metadata:")
 	"""
@@ -138,6 +138,8 @@ def evaluate(test_annotation_file_seg, test_annotation_file, user_submission_fil
 		#data_dict = load_jsonl(user_submission_file)
 		with open(user_submission_file, 'r') as f:
 			data_dict = json.load(f)
+		
+		test_annotation_file_seg = test_annotation_file[:-8] +'.npz'
 		seg_data = np.load(test_annotation_file_seg)
 		seg_name_list = seg_data['names'].tolist()
 		segments_array = seg_data['segments']

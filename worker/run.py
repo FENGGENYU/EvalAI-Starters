@@ -19,9 +19,9 @@ def run():
     annotation_file_path = "{}/annotations/test_gt.json".format(
         current_working_directory
     )  # Add the test annotation file path
-    annotation_file_path_seg = "{}/annotations/test.npz".format(
-        current_working_directory
-    )  # Add the test annotation file path
+    # annotation_file_path_seg = "{}/annotations/test.npz".format(
+    #     current_working_directory
+    # )  # Add the test annotation file path
     #upload data
     user_submission_file_path = "{}/annotations/test_gt.json".format(
         current_working_directory
@@ -54,7 +54,6 @@ def run():
         "submitted_at": u"2017-03-20T19:22:03.880652Z",
     }
     EVALUATION_SCRIPTS[challenge_id].evaluate(
-        annotation_file_path_seg,
         annotation_file_path,
         user_submission_file_path,
         challenge_phase,
