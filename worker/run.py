@@ -16,14 +16,14 @@ def run():
     challenge_id = 1
     challenge_phase = "eval"  # Add the challenge phase codename to be tested
     #load gt data
-    annotation_file_path = "{}/annotations/test_gt.json".format(
+    annotation_file_path = "{}/annotations/val.npz".format(
         current_working_directory
     )  # Add the test annotation file path
     # annotation_file_path_seg = "{}/annotations/test.npz".format(
     #     current_working_directory
     # )  # Add the test annotation file path
     #upload data
-    user_submission_file_path = "{}/annotations/test_gt.json".format(
+    user_submission_file_path = "{}/annotations/val_fake.json".format(
         current_working_directory
     )  # Add the sample submission file path
 

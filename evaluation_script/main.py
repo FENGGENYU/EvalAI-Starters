@@ -123,9 +123,10 @@ def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwarg
 		}
 	"""
 	print(kwargs["submission_metadata"])
+	print('test_annotation_file ', test_annotation_file)
 	output = {}
-	with open(test_annotation_file, 'r') as f:
-		gt_dict = json.load(f)
+	# with open(test_annotation_file, 'r') as f:
+	# 	gt_dict = json.load(f)
 	#gt_dict = load_jsonl(test_annotation_file)
 	if phase_codename == "dev" or phase_codename == "eval":
 		if phase_codename == "eval":
@@ -139,10 +140,11 @@ def evaluate(test_annotation_file, user_submission_file, phase_codename, **kwarg
 		with open(user_submission_file, 'r') as f:
 			data_dict = json.load(f)
 		
-		test_annotation_file_seg = test_annotation_file[:-8] +'.npz'
-		seg_data = np.load(test_annotation_file_seg)
+		#test_annotation_file_seg = test_annotation_file[:-8] +'.npz'
+		seg_data = np.load(test_annotation_file, allow_pickle=True)
 		seg_name_list = seg_data['names'].tolist()
 		segments_array = seg_data['segments']
+		gt_dict = seg_data['labels'].item()
 
 		print(f"Evaluating for {phase_name} Phase")
 		# get AP for each query
