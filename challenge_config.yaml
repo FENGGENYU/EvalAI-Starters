@@ -78,7 +78,7 @@ challenge_phases:
     is_public: True
     is_submission_public: True
     start_date: 2023-08-05 00:00:00
-    end_date: 2023-09-20 6:59:59
+    end_date: 2023-09-16 6:59:59
     test_annotation_file: annotations/test.npz
     codename: eval
     max_submissions_per_day: 10
